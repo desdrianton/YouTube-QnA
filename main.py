@@ -1,4 +1,4 @@
-from code.cindy import Cindy
+from core.cindy import Cindy
 
 
 def main():

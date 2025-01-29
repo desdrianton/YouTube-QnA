@@ -1,7 +1,7 @@
 import gradio as gr
 
-from code.openai_connector import OpenAIConnector
-from code.yt_transcript import YTTranscript
+from core.openai_connector import OpenAIConnector
+from core.yt_transcript import YTTranscript
 
 
 class GradioUI:

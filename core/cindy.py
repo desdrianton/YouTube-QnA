@@ -1,6 +1,6 @@
-from code.gradio_ui import GradioUI
-from code.openai_connector import OpenAIConnector
-from code.yt_transcript import YTTranscript
+from core.gradio_ui import GradioUI
+from core.openai_connector import OpenAIConnector
+from core.yt_transcript import YTTranscript
 
 
 class Cindy:
