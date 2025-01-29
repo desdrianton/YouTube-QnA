@@ -1,4 +1,4 @@
-gradio~=5.9.1
-youtube-transcript-api
 python-dotenv~=1.0.1
 openai~=1.59.3
+gradio~=5.9.1
+youtube-transcript-api~=0.6.3

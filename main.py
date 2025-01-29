@@ -1,12 +1,9 @@
-from code.fun import print_cindy_header
-from code.gradio_ui import setup_gradio_ui
-from code.llm_connector import setup_openai
+from code.cindy import Cindy
 
 
 def main():
-    print_cindy_header()
-    openai = setup_openai()
-    setup_gradio_ui(openai=openai)
+    cindy = Cindy()
+    cindy.launch()
 
 
 if __name__ == '__main__':

@@ -1,38 +1,36 @@
 import gradio as gr
-from openai import OpenAI
 
-from code.llm_connector import construct_system_message, CHAT_GPT_MODEL
-
-chat_gpt: OpenAI
+from code.openai_connector import OpenAIConnector
+from code.yt_transcript import YTTranscript
 
 
-def print_info(*, query_params: str, history, messages):
-    print(f"{'.' * 100} {query_params}")
-    print("History is:")
-    print(history)
-    print("And messages is:")
-    print(messages)
+class GradioUI:
+    _openai_connector: OpenAIConnector
+    _yt_transcript: YTTranscript
 
+    def __init__(self, openai_connector: OpenAIConnector, yt_transcript: YTTranscript):
+        self._openai_connector = openai_connector
+        self._yt_transcript = yt_transcript
 
-def chat(message, history, request: gr.Request):
-    messages = (
-            [{"role": "system", "content": construct_system_message(video_transcript="")}] +
-            history +
-            [{"role": "user", "content": message}]
-    )
+    def _chat(self, message, history, request: gr.Request):
+        query_params: dict = dict(request.query_params)
+        print(f"query_params: {query_params.get("video_id")}")
+        video_id = query_params.get("video_id")
+        video_transcript = self._yt_transcript.get_transcript(video_id)
 
-    print_info(query_params=request.query_params, history=history, messages=messages)
+        messages = (
+                [{"role": "system", "content": self._openai_connector.construct_system_message(video_transcript=video_transcript)}] +
+                history +
+                [{"role": "user", "content": message}]
+        )
 
-    stream = chat_gpt.chat.completions.create(model=CHAT_GPT_MODEL, messages=messages, stream=True)
+        stream = self._openai_connector.get_openai().chat.completions.create(
+            model=self._openai_connector.CHAT_GPT_MODEL, messages=messages, stream=True)
 
-    response = ""
-    for chunk in stream:
-        response += chunk.choices[0].delta.content or ''
-        yield response
+        response = ""
+        for chunk in stream:
+            response += chunk.choices[0].delta.content or ''
+            yield response
 
-
-def setup_gradio_ui(openai: OpenAI):
-    global chat_gpt
-    chat_gpt = openai
-
-    gr.ChatInterface(fn=chat, type="messages").launch()
+    def launch(self):
+        gr.ChatInterface(fn=self._chat, type="messages").launch()
