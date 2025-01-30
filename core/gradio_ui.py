@@ -14,12 +14,13 @@ class GradioUI:
 
     def _chat(self, message, history, request: gr.Request):
         query_params: dict = dict(request.query_params)
-        print(f"query_params: {query_params.get("video_id")}")
+        print(f"video_id: {query_params.get("video_id")}")
         video_id = query_params.get("video_id")
         video_transcript = self._yt_transcript.get_transcript(video_id)
 
         messages = (
-                [{"role": "system", "content": self._openai_connector.construct_system_message(video_transcript=video_transcript)}] +
+                [{"role": "system",
+                  "content": self._openai_connector.construct_system_message(video_transcript=video_transcript)}] +
                 history +
                 [{"role": "user", "content": message}]
         )
@@ -33,4 +34,19 @@ class GradioUI:
             yield response
 
     def launch(self):
-        gr.ChatInterface(fn=self._chat, type="messages").launch()
+        force_light_mode = """
+        function refresh() {
+            const url = new URL(window.location);
+            if (url.searchParams.get('__theme') !== 'light') {
+                url.searchParams.set('__theme', 'light');
+                window.location.href = url.href;
+            }
+        }
+        """
+
+        hide_footer = """footer{display:none !important}"""
+        gr.ChatInterface(fn=self._chat, type="messages",
+                         title="Cindy AI",
+                         description="<center>Curiosity, Inspiration, Navigation, and Development for You</center",
+                         js=force_light_mode,
+                         css=hide_footer).launch()

@@ -9,7 +9,7 @@ class YTTranscript:
         print(f"Retrieving transcript for video id: {video_id}")
 
         try:
-            transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['id'])
+            transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=["id", "en"])
             plain_transcript =  " ".join([item['text'] for item in transcript])
             print(f"Length of transcript {video_id} : {len(plain_transcript)}")
             return plain_transcript
