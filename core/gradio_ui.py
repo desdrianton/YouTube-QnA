@@ -19,10 +19,10 @@ class GradioUI:
         video_transcript = self._yt_transcript.get_transcript(video_id)
 
         messages = (
-                [{"role": "system",
-                  "content": self._openai_connector.construct_system_message(video_transcript=video_transcript)}] +
-                history +
-                [{"role": "user", "content": message}]
+            [{"role": "system",
+              "content": self._openai_connector.construct_system_message(video_transcript=video_transcript)}] +
+            history +
+            [{"role": "user", "content": message}]
         )
 
         stream = self._openai_connector.get_openai().chat.completions.create(
@@ -48,5 +48,6 @@ class GradioUI:
         gr.ChatInterface(fn=self._chat, type="messages",
                          title="Cindy AI",
                          description="<center>Curiosity, Inspiration, Navigation, and Development for You</center",
-                         js=force_light_mode,
-                         css=hide_footer).launch()
+                         # js=force_light_mode,
+                         css=hide_footer
+                         ).launch()
